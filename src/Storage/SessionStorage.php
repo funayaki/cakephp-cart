@@ -43,7 +43,7 @@ class SessionStorage implements StorageInterface
      */
     public function __construct($request)
     {
-        $this->_session = $request->session();
+        $this->_session = $request->getSession();
     }
 
     /**
