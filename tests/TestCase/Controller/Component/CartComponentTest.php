@@ -66,7 +66,7 @@ class CartComponentTest extends TestCase
      */
     public function testAddInvalidItem()
     {
-        $this->setExpectedException(\Exception::class);
+        $this->expectException(\Exception::class);
         $this->Cart->add(new \Cake\ORM\Entity());
     }
 
@@ -75,7 +75,7 @@ class CartComponentTest extends TestCase
      */
     public function testAddInvalidQuantity()
     {
-        $this->setExpectedException(\Exception::class);
+        $this->expectException(\Exception::class);
         $this->Cart->add(new \Cart\Entity\Item(), 'two');
     }
 
@@ -84,7 +84,7 @@ class CartComponentTest extends TestCase
      */
     public function testAddDuplicateItem()
     {
-        $this->setExpectedException(\Exception::class);
+        $this->expectException(\Exception::class);
 
         $item = new \Cart\Entity\Item();
         $this->Cart->add($item);
@@ -104,7 +104,7 @@ class CartComponentTest extends TestCase
      */
     public function testEditItemNotFound()
     {
-        $this->setExpectedException(\Exception::class);
+        $this->expectException(\Exception::class);
         $this->Cart->edit(new \Cart\Entity\Item());
     }
 
@@ -123,7 +123,7 @@ class CartComponentTest extends TestCase
      */
     public function testDeleteItemNotFound()
     {
-        $this->setExpectedException(\Exception::class);
+        $this->expectException(\Exception::class);
         $this->Cart->delete(new \Cart\Entity\Item());
     }
 
