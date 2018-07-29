@@ -137,7 +137,7 @@ class CartComponentTest extends TestCase
     }
 
     /**
-     *
+     * @return void
      */
     public function testTotal()
     {
@@ -149,7 +149,26 @@ class CartComponentTest extends TestCase
     }
 
     /**
-     *
+     * @return void
+     */
+    public function testTotalEachItem()
+    {
+        $item1 = new \Cart\Entity\Item();
+        $item1->price = 50;
+
+        $item2 = new \Cart\Entity\Item();
+        $item2->price = 70;
+
+        $this->Cart->add($item1, 3);
+        $this->Cart->add($item2, 2);
+
+        $this->assertEquals(150, $this->Cart->total($item1));
+        $this->assertEquals(140, $this->Cart->total($item2));
+        $this->assertEquals(290, $this->Cart->total());
+    }
+
+    /**
+     * @return void
      */
     public function testClear()
     {
@@ -159,6 +178,9 @@ class CartComponentTest extends TestCase
         $this->assertTrue($this->Cart->get() === []);
     }
 
+    /**
+     * @return void
+     */
     public function testCount()
     {
         $item = new \Cart\Entity\Item();
@@ -167,6 +189,24 @@ class CartComponentTest extends TestCase
 
         $this->Cart->add($item, 2);
         $this->assertEquals(2, $this->Cart->count());
-        $this->assertEquals(2, $this->Cart->count($item));
+    }
+
+    /**
+     * @return void
+     */
+    public function testCountEachItem()
+    {
+        $item1 = new \Cart\Entity\Item();
+        $item1->price = 50;
+
+        $item2 = new \Cart\Entity\Item();
+        $item2->price = 70;
+
+        $this->Cart->add($item1, 2);
+        $this->Cart->add($item2, 3);
+
+        $this->assertEquals(2, $this->Cart->count($item1));
+        $this->assertEquals(3, $this->Cart->count($item2));
+        $this->assertEquals(5, $this->Cart->count());
     }
 }

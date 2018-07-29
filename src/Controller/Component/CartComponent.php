@@ -124,10 +124,15 @@ class CartComponent extends Component
         return $this->storage()->read();
     }
 
+    /**
+     * @param \Cart\Entity\EntityPriceAwareInterface|null $entity
+     * @return mixed
+     * @throws \Exception
+     */
     public function count(\Cart\Entity\EntityPriceAwareInterface $entity = null)
     {
         if ($entity) {
-            foreach ($this->_objects as &$object) {
+            foreach ($this->_objects as $object) {
                 if ($object['entity'] == $entity) {
                     return $object['quantity'];
                 }
@@ -152,9 +157,20 @@ class CartComponent extends Component
     /**
      * @return int
      */
-    public function total()
+    public function total(\Cart\Entity\EntityPriceAwareInterface $entity = null)
     {
         $total = 0;
+
+        if ($entity) {
+            foreach ($this->_objects as $object) {
+                if ($object['entity'] == $entity) {
+                    $total += $object['entity']->getPrice() * $object['quantity'];
+                    return $total;
+                }
+            }
+            throw new \Exception();
+        }
+
         foreach ($this->_objects as $object) {
             $total += $object['entity']->getPrice() * $object['quantity'];
         }
