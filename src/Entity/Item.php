@@ -24,4 +24,8 @@ namespace Cart\Entity;
 class Item implements EntityPriceAwareInterface
 {
 
+    public function getPrice()
+    {
+        return $this->price;
+    }
 }

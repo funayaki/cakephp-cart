@@ -156,7 +156,7 @@ class CartComponent extends Component
     {
         $total = 0;
         foreach ($this->_objects as $object) {
-            $total += $object['entity']->price * $object['quantity'];
+            $total += $object['entity']->getPrice() * $object['quantity'];
         }
 
         return $total;
