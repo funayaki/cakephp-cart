@@ -63,7 +63,9 @@ class CartComponent extends Component
     public function add(\Cart\Entity\EntityPriceAwareInterface $entity, $quantity = 1)
     {
         $this->_validate($entity, $quantity);
-        $this->_entityExists($entity);
+        if ($this->_entityExists($entity)) {
+            return $this->edit($entity, $this->count($entity) + $quantity);
+        }
 
         $this->_objects[] = [
             'entity' => $entity,
@@ -122,9 +124,20 @@ class CartComponent extends Component
         return $this->storage()->read();
     }
 
-    public function count()
+    public function count(\Cart\Entity\EntityPriceAwareInterface $entity = null)
     {
-        return count ($this->get());
+        if ($entity) {
+            foreach ($this->_objects as &$object) {
+                if ($object['entity'] == $entity) {
+                    return $object['quantity'];
+                }
+            }
+            throw new \Exception();
+        }
+
+        return array_reduce($this->get(), function ($count, $object) {
+            return $count + $object['quantity'];
+        }, 0);
     }
 
     /**
@@ -179,15 +192,17 @@ class CartComponent extends Component
 
     /**
      * @param $entity
-     * @throws \Exception
+     * @return bool
      */
     protected function _entityExists($entity)
     {
         foreach ($this->_objects as $object) {
             if ($object['entity'] == $entity) {
-                throw new \Exception();
+                return true;
             }
         }
+
+        return false;
     }
 
 }

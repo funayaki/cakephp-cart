@@ -84,11 +84,10 @@ class CartComponentTest extends TestCase
      */
     public function testAddDuplicateItem()
     {
-        $this->expectException(\Exception::class);
-
         $item = new \Cart\Entity\Item();
-        $this->Cart->add($item);
-        $this->Cart->add($item);
+
+        $this->assertTrue($this->Cart->add($item));
+        $this->assertTrue($this->Cart->add($item));
     }
 
     /**
@@ -158,5 +157,16 @@ class CartComponentTest extends TestCase
         $this->Cart->clear();
 
         $this->assertTrue($this->Cart->get() === []);
+    }
+
+    public function testCount()
+    {
+        $item = new \Cart\Entity\Item();
+
+        $this->assertEquals(0, $this->Cart->count());
+
+        $this->Cart->add($item, 2);
+        $this->assertEquals(2, $this->Cart->count());
+        $this->assertEquals(2, $this->Cart->count($item));
     }
 }
