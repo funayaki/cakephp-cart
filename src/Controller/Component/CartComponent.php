@@ -69,7 +69,8 @@ class CartComponent extends Component
 
         $this->_objects[] = [
             'entity' => $entity,
-            'quantity' => $quantity
+            'quantity' => $quantity,
+            'total' => $entity->getPrice() * $quantity,
         ];
 
         $this->storage()->write($this->_objects);
@@ -88,6 +89,7 @@ class CartComponent extends Component
         foreach ($this->_objects as &$object) {
             if ($object['entity'] == $entity) {
                 $object['quantity'] = $quantity;
+                $object['total'] = $entity->getPrice() * $object['quantity'];
                 $this->storage()->write($this->_objects);
 
                 return true;
@@ -164,15 +166,14 @@ class CartComponent extends Component
         if ($entity) {
             foreach ($this->_objects as $object) {
                 if ($object['entity'] == $entity) {
-                    $total += $object['entity']->getPrice() * $object['quantity'];
-                    return $total;
+                    return $object['total'];
                 }
             }
             throw new \Exception();
         }
 
         foreach ($this->_objects as $object) {
-            $total += $object['entity']->getPrice() * $object['quantity'];
+            $total += $object['total'];
         }
 
         return $total;
