@@ -64,15 +64,6 @@ class CartComponentTest extends TestCase
     /**
      * @return void
      */
-    public function testAddInvalidItem()
-    {
-        $this->expectException(\Exception::class);
-        $this->Cart->add(new \Cake\ORM\Entity());
-    }
-
-    /**
-     * @return void
-     */
     public function testAddInvalidQuantity()
     {
         $this->expectException(\Exception::class);
