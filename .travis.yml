@@ -21,6 +21,9 @@ matrix:
     - php: 7.0
       env: PHPCS=1
 
+  allow_failures:
+    - env: PHPCS=1
+
 before_script:
   - if [[ $PHPCS = 1 ]]; then composer require cakephp/cakephp-codesniffer:^3.0; fi
   - if [[ $PHPCS != 1 ]]; then composer require cakephp/cakephp:~$CAKEPHP; fi
