@@ -3,6 +3,10 @@
 
 # Cart plugin for CakePHP
 
+## Requirements
+
+- CakePHP 3.5.0 or later
+
 ## Installation
 
 You can install this plugin into your CakePHP application using [composer](http://getcomposer.org).
