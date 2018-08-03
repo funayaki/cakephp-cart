@@ -19,8 +19,22 @@
 namespace Cart\Test\TestCase\Controller\Component;
 
 use Cake\Controller\ComponentRegistry;
+use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
 use Cart\Controller\Component\CartComponent;
+use Cart\Entity\EntityPriceAwareInterface;
+
+class Item extends Entity implements EntityPriceAwareInterface
+{
+    protected $_accessible = [
+        'price' => true,
+    ];
+
+    public function getPrice()
+    {
+        return $this->price;
+    }
+}
 
 /**
  * @author Rafael Queiroz <rafaelfqf@gmail.com>
@@ -67,7 +81,7 @@ class CartComponentTest extends TestCase
     public function testAddInvalidQuantity()
     {
         $this->expectException(\Exception::class);
-        $this->Cart->add(new \Cart\Entity\Item(), 'two');
+        $this->Cart->add(new Item(), 'two');
     }
 
     /**
@@ -75,7 +89,7 @@ class CartComponentTest extends TestCase
      */
     public function testAddDuplicateItem()
     {
-        $item = new \Cart\Entity\Item();
+        $item = new Item();
 
         $this->assertTrue($this->Cart->add($item));
         $this->assertTrue($this->Cart->add($item));
@@ -86,7 +100,7 @@ class CartComponentTest extends TestCase
      */
     public function testAdd()
     {
-        $this->assertTrue($this->Cart->add(new \Cart\Entity\Item()));
+        $this->assertTrue($this->Cart->add(new Item()));
     }
 
     /**
@@ -95,7 +109,7 @@ class CartComponentTest extends TestCase
     public function testEditItemNotFound()
     {
         $this->expectException(\Exception::class);
-        $this->Cart->edit(new \Cart\Entity\Item());
+        $this->Cart->edit(new Item());
     }
 
     /**
@@ -103,7 +117,7 @@ class CartComponentTest extends TestCase
      */
     public function testEdit()
     {
-        $item = new \Cart\Entity\Item();
+        $item = new Item();
         $this->Cart->add($item);
         $this->assertTrue($this->Cart->edit($item, 5));
     }
@@ -114,7 +128,7 @@ class CartComponentTest extends TestCase
     public function testDeleteItemNotFound()
     {
         $this->expectException(\Exception::class);
-        $this->Cart->delete(new \Cart\Entity\Item());
+        $this->Cart->delete(new Item());
     }
 
     /**
@@ -122,7 +136,7 @@ class CartComponentTest extends TestCase
      */
     public function testDelete()
     {
-        $item = new \Cart\Entity\Item();
+        $item = new Item();
         $this->Cart->add($item);
         $this->assertTrue($this->Cart->delete($item));
     }
@@ -132,7 +146,7 @@ class CartComponentTest extends TestCase
      */
     public function testTotal()
     {
-        $item = new \Cart\Entity\Item();
+        $item = new Item();
         $item->price = 50;
 
         $this->Cart->add($item, 3);
@@ -144,10 +158,10 @@ class CartComponentTest extends TestCase
      */
     public function testTotalEachItem()
     {
-        $item1 = new \Cart\Entity\Item();
+        $item1 = new Item();
         $item1->price = 50;
 
-        $item2 = new \Cart\Entity\Item();
+        $item2 = new Item();
         $item2->price = 70;
 
         $this->Cart->add($item1, 3);
@@ -163,7 +177,7 @@ class CartComponentTest extends TestCase
      */
     public function testClear()
     {
-        $this->Cart->add(new \Cart\Entity\Item());
+        $this->Cart->add(new Item());
         $this->Cart->clear();
 
         $this->assertTrue($this->Cart->get() === []);
@@ -174,7 +188,7 @@ class CartComponentTest extends TestCase
      */
     public function testCount()
     {
-        $item = new \Cart\Entity\Item();
+        $item = new Item();
 
         $this->assertEquals(0, $this->Cart->count());
 
@@ -187,10 +201,10 @@ class CartComponentTest extends TestCase
      */
     public function testCountEachItem()
     {
-        $item1 = new \Cart\Entity\Item();
+        $item1 = new Item();
         $item1->price = 50;
 
-        $item2 = new \Cart\Entity\Item();
+        $item2 = new Item();
         $item2->price = 70;
 
         $this->Cart->add($item1, 2);
