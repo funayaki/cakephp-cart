@@ -4,7 +4,6 @@ dist: trusty
 
 env:
   matrix:
-    - CAKEPHP=3.4.0
     - CAKEPHP=3.5.0
     - CAKEPHP=3.6.0
 
