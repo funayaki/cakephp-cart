@@ -153,6 +153,7 @@ class CartComponent extends Component
     public function clear()
     {
         $this->storage()->delete();
+        $this->_objects = $this->storage()->read();
     }
 
 

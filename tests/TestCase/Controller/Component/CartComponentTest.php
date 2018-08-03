@@ -177,10 +177,15 @@ class CartComponentTest extends TestCase
      */
     public function testClear()
     {
-        $this->Cart->add(new Item());
+        $item = new Item();
+        $item->price = 50;
+
+        $this->Cart->add($item);
         $this->Cart->clear();
 
         $this->assertTrue($this->Cart->get() === []);
+        $this->assertEquals(0, $this->Cart->count());
+        $this->assertEquals(0, $this->Cart->total());
     }
 
     /**
