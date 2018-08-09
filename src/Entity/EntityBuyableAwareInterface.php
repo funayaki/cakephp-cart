@@ -21,8 +21,8 @@ namespace Cart\Entity;
 /**
  * @author Rafael Queiroz <rafaelfqf@gmail.com>
  */
-interface EntityPriceAwareInterface
+interface EntityBuyableAwareInterface
 {
-
     public function getPrice();
+    public function getBuyableLimit();
 }

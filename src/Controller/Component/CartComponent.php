@@ -20,6 +20,7 @@ namespace Cart\Controller\Component;
 
 use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
+use Cart\Exception\BuyableLimitExceededException;
 
 /**
  * @author Rafael Queiroz <rafaelfqf@gmail.com>
@@ -55,17 +56,19 @@ class CartComponent extends Component
     }
 
     /**
-     * @param \Cart\Entity\EntityPriceAwareInterface $entity
+     * @param \Cart\Entity\EntityBuyableAwareInterface $entity
      * @param int $quantity
      * @return bool
-     * @throws \Exception
+     * @throws \Cart\Exception\BuyableLimitExceededException
      */
-    public function add(\Cart\Entity\EntityPriceAwareInterface $entity, $quantity = 1)
+    public function add(\Cart\Entity\EntityBuyableAwareInterface $entity, $quantity = 1)
     {
         $this->_validate($entity, $quantity);
         if ($this->_entityExists($entity)) {
             return $this->edit($entity, $this->count($entity) + $quantity);
         }
+
+        $this->_ensureBuyable($entity, $quantity);
 
         $this->_objects[] = [
             'entity' => $entity,
@@ -78,16 +81,19 @@ class CartComponent extends Component
     }
 
     /**
-     * @param \Cart\Entity\EntityPriceAwareInterface $entity
+     * @param \Cart\Entity\EntityBuyableAwareInterface $entity
      * @param int $quantity
      * @return bool
-     * @throws \Exception
+     * @throws \Cart\Exception\BuyableLimitExceededException
      */
-    public function edit(\Cart\Entity\EntityPriceAwareInterface $entity, $quantity = 1)
+    public function edit(\Cart\Entity\EntityBuyableAwareInterface $entity, $quantity = 1)
     {
         $this->_validate($entity, $quantity);
         foreach ($this->_objects as &$object) {
             if ($object['entity'] == $entity) {
+
+                $this->_ensureBuyable($entity, $quantity);
+
                 $object['quantity'] = $quantity;
                 $object['total'] = $entity->getPrice() * $object['quantity'];
                 $this->storage()->write($this->_objects);
@@ -100,11 +106,11 @@ class CartComponent extends Component
     }
 
     /**
-     * @param \Cart\Entity\EntityPriceAwareInterface $entity
+     * @param \Cart\Entity\EntityBuyableAwareInterface $entity
      * @return bool
      * @throws \Exception
      */
-    public function delete(\Cart\Entity\EntityPriceAwareInterface $entity)
+    public function delete(\Cart\Entity\EntityBuyableAwareInterface $entity)
     {
         foreach ($this->_objects as $key => $object) {
             if ($object['entity'] == $entity) {
@@ -113,7 +119,6 @@ class CartComponent extends Component
                 return true;
             }
         }
-
 
         throw new \Exception();
     }
@@ -127,11 +132,11 @@ class CartComponent extends Component
     }
 
     /**
-     * @param \Cart\Entity\EntityPriceAwareInterface|null $entity
+     * @param \Cart\Entity\EntityBuyableAwareInterface|null $entity
      * @return mixed
      * @throws \Exception
      */
-    public function count(\Cart\Entity\EntityPriceAwareInterface $entity = null)
+    public function count(\Cart\Entity\EntityBuyableAwareInterface $entity = null)
     {
         if ($entity) {
             foreach ($this->_objects as $object) {
@@ -160,7 +165,7 @@ class CartComponent extends Component
     /**
      * @return int
      */
-    public function total(\Cart\Entity\EntityPriceAwareInterface $entity = null)
+    public function total(\Cart\Entity\EntityBuyableAwareInterface $entity = null)
     {
         $total = 0;
 
@@ -200,7 +205,7 @@ class CartComponent extends Component
      */
     protected function _validate($entity, $quantity)
     {
-        if (!$entity instanceof \Cart\Entity\EntityPriceAwareInterface) {
+        if (!$entity instanceof \Cart\Entity\EntityBuyableAwareInterface) {
             throw new \Exception();
         }
         if ($quantity < 1) {
@@ -223,4 +228,18 @@ class CartComponent extends Component
         return false;
     }
 
+    /**
+     * @param \Cart\Entity\EntityBuyableAwareInterface $entity
+     * @param $quantity
+     * @return bool
+     * @throws \Cart\Exception\BuyableLimitExceededException
+     */
+    protected function _ensureBuyable(\Cart\Entity\EntityBuyableAwareInterface $entity, $quantity)
+    {
+        if ($quantity > $entity->getBuyableLimit()) {
+            throw  new BuyableLimitExceededException();
+        }
+
+        return true;
+    }
 }
