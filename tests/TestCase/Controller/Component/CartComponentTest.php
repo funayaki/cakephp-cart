@@ -22,17 +22,26 @@ use Cake\Controller\ComponentRegistry;
 use Cake\ORM\Entity;
 use Cake\TestSuite\TestCase;
 use Cart\Controller\Component\CartComponent;
-use Cart\Entity\EntityPriceAwareInterface;
+use Cart\Entity\EntityBuyableAwareInterface;
+use Cart\Entity\EntityBuyableLimitAwareInterface;
+use Cart\Exception\BuyableLimitExceededException;
 
-class Item extends Entity implements EntityPriceAwareInterface
+class Item extends Entity implements EntityBuyableAwareInterface
 {
     protected $_accessible = [
         'price' => true,
     ];
 
+    public $buyable_limit = INF;
+
     public function getPrice()
     {
         return $this->price;
+    }
+
+    public function getBuyableLimit()
+    {
+        return $this->buyable_limit;
     }
 }
 
@@ -106,10 +115,39 @@ class CartComponentTest extends TestCase
     /**
      * @return void
      */
+    public function testAddBuyableLimitExeeded()
+    {
+        $this->expectException(BuyableLimitExceededException::class);
+
+        $item = new Item();
+        $item->buyable_limit = 1;
+
+        $this->Cart->add($item, 2);
+    }
+
+    /**
+     * @return void
+     */
     public function testEditItemNotFound()
     {
         $this->expectException(\Exception::class);
         $this->Cart->edit(new Item());
+    }
+
+    /**
+     * @return void
+     */
+    public function testEditBuyableLimitExceeded()
+    {
+        $this->expectException(BuyableLimitExceededException::class);
+
+        $item = new Item();
+        $item->buyable_limit = 1;
+
+        $this->Cart->add($item);
+        $this->assertEquals(1, $this->Cart->count());
+
+        $this->Cart->edit($item, 2);
     }
 
     /**
