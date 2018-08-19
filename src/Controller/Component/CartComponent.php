@@ -126,6 +126,7 @@ class CartComponent extends Component
     /**
      * @param \Cart\Entity\EntityBuyableAwareInterface|null $entity
      * @return mixed
+     * @throws \Exception
      */
     public function get(\Cart\Entity\EntityBuyableAwareInterface $entity = null)
     {
@@ -137,6 +138,8 @@ class CartComponent extends Component
                     return $object;
                 }
             }
+
+            throw new \Exception();
         }
 
         return $objects;

@@ -269,4 +269,16 @@ class CartComponentTest extends TestCase
 
         $this->assertEquals($item, $this->Cart->get($item)['entity']);
     }
+
+    /**
+     * @return void
+     */
+    public function testGetWithInvalidItem()
+    {
+        $this->expectException(\Exception::class);
+
+        $item = new Item();
+
+        $this->Cart->get($item);
+    }
 }
