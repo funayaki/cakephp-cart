@@ -257,4 +257,16 @@ class CartComponentTest extends TestCase
         $this->assertEquals(3, $this->Cart->count($item2));
         $this->assertEquals(5, $this->Cart->count());
     }
+
+    /**
+     * @return void
+     */
+    public function testGet()
+    {
+        $item = new Item();
+
+        $this->Cart->add($item);
+
+        $this->assertEquals($item, $this->Cart->get($item)['entity']);
+    }
 }
