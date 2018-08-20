@@ -124,11 +124,25 @@ class CartComponent extends Component
     }
 
     /**
-     * @return array
+     * @param \Cart\Entity\EntityBuyableAwareInterface|null $entity
+     * @return mixed
+     * @throws \Exception
      */
-    public function get()
+    public function get(\Cart\Entity\EntityBuyableAwareInterface $entity = null)
     {
-        return $this->storage()->read();
+        $objects = $this->storage()->read();
+
+        if ($entity) {
+            foreach ($objects as $object) {
+                if ($object['entity'] == $entity) {
+                    return $object;
+                }
+            }
+
+            throw new \Exception();
+        }
+
+        return $objects;
     }
 
     /**
