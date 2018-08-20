@@ -175,9 +175,10 @@ class CartComponent extends Component
         $this->_objects = $this->storage()->read();
     }
 
-
     /**
+     * @param \Cart\Entity\EntityBuyableAwareInterface|null $entity
      * @return int
+     * @throws \Exception
      */
     public function total(\Cart\Entity\EntityBuyableAwareInterface $entity = null)
     {
