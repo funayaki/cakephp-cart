@@ -187,6 +187,8 @@ class CartComponentTest extends TestCase
         $item = new Item();
         $item->price = 50;
 
+        $this->assertEquals(0, $this->Cart->total());
+
         $this->Cart->add($item, 3);
         $this->assertTrue($this->Cart->total() === 150);
     }
