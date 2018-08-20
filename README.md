@@ -30,7 +30,7 @@ class Item extends Entity implements EntityBuyableAwareInterface
 
     public function getBuyableLimit()
     {
-        return $this->buyable_limit;
+        return INF;
     }
 }
 ```
