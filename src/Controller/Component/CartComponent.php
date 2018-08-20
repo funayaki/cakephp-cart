@@ -36,11 +36,6 @@ class CartComponent extends Component
     ];
 
     /**
-     * @var array
-     */
-    protected $_objects = [];
-
-    /**
      * @var \Cart\Storage\StorageInterface
      */
     protected $_storage;
@@ -52,7 +47,6 @@ class CartComponent extends Component
     {
         parent::initialize($config);
         $this->storage(new $this->_config['storage']($this->_registry->getController()->request));
-        $this->_objects = $this->storage()->read();
     }
 
     /**
@@ -70,13 +64,14 @@ class CartComponent extends Component
 
         $this->_ensureBuyable($entity, $quantity);
 
-        $this->_objects[] = [
+        $objects = $this->get();
+        $objects[] = [
             'entity' => $entity,
             'quantity' => $quantity,
             'total' => $entity->getPrice() * $quantity,
         ];
 
-        $this->storage()->write($this->_objects);
+        $this->storage()->write($objects);
         return true;
     }
 
@@ -89,14 +84,16 @@ class CartComponent extends Component
     public function edit(\Cart\Entity\EntityBuyableAwareInterface $entity, $quantity = 1)
     {
         $this->_validate($entity, $quantity);
-        foreach ($this->_objects as &$object) {
+
+        $objects = $this->get();
+        foreach ($objects as &$object) {
             if ($object['entity'] == $entity) {
 
                 $this->_ensureBuyable($entity, $quantity);
 
                 $object['quantity'] = $quantity;
                 $object['total'] = $entity->getPrice() * $object['quantity'];
-                $this->storage()->write($this->_objects);
+                $this->storage()->write($objects);
 
                 return true;
             }
@@ -112,10 +109,11 @@ class CartComponent extends Component
      */
     public function delete(\Cart\Entity\EntityBuyableAwareInterface $entity)
     {
-        foreach ($this->_objects as $key => $object) {
+        $objects = $this->get();
+        foreach ($objects as $key => $object) {
             if ($object['entity'] == $entity) {
-                unset ($this->_objects[$key]);
-                $this->storage()->write($this->_objects);
+                unset ($objects[$key]);
+                $this->storage()->write($objects);
                 return true;
             }
         }
@@ -153,12 +151,7 @@ class CartComponent extends Component
     public function count(\Cart\Entity\EntityBuyableAwareInterface $entity = null)
     {
         if ($entity) {
-            foreach ($this->_objects as $object) {
-                if ($object['entity'] == $entity) {
-                    return $object['quantity'];
-                }
-            }
-            throw new \Exception();
+            return $this->get($entity)['quantity'];
         }
 
         return array_reduce($this->get(), function ($count, $object) {
@@ -172,32 +165,22 @@ class CartComponent extends Component
     public function clear()
     {
         $this->storage()->delete();
-        $this->_objects = $this->storage()->read();
     }
 
     /**
      * @param \Cart\Entity\EntityBuyableAwareInterface|null $entity
-     * @return int
+     * @return mixed
      * @throws \Exception
      */
     public function total(\Cart\Entity\EntityBuyableAwareInterface $entity = null)
     {
-        $total = 0;
-
         if ($entity) {
-            foreach ($this->_objects as $object) {
-                if ($object['entity'] == $entity) {
-                    return $object['total'];
-                }
-            }
-            throw new \Exception();
+            return $this->get($entity)['total'];
         }
 
-        foreach ($this->_objects as $object) {
-            $total += $object['total'];
-        }
-
-        return $total;
+        return array_reduce($this->get(), function ($total, $object) {
+            return $total + $object['total'];
+        }, 0);
     }
 
     /**
