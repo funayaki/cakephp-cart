@@ -228,18 +228,17 @@ class CartComponent extends Component
     }
 
     /**
-     * @param $entity
+     * @param \Cart\Entity\EntityBuyableAwareInterface $entity
      * @return bool
      */
-    protected function _entityExists($entity)
+    protected function _entityExists(\Cart\Entity\EntityBuyableAwareInterface $entity)
     {
-        foreach ($this->_objects as $object) {
-            if ($object['entity'] == $entity) {
-                return true;
-            }
+        try {
+            $this->get($entity);
+            return true;
+        } catch (\Exception $e) {
+            return false;
         }
-
-        return false;
     }
 
     /**
