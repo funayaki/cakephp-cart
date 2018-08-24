@@ -215,6 +215,16 @@ class CartComponentTest extends TestCase
     /**
      * @return void
      */
+    public function testTotalItemNotFound()
+    {
+        $this->expectException(\Exception::class);
+
+        $this->Cart->total(new Item());
+    }
+
+    /**
+     * @return void
+     */
     public function testClear()
     {
         $item = new Item();
@@ -258,6 +268,15 @@ class CartComponentTest extends TestCase
         $this->assertEquals(2, $this->Cart->count($item1));
         $this->assertEquals(3, $this->Cart->count($item2));
         $this->assertEquals(5, $this->Cart->count());
+    }
+
+    /**
+     * @return void
+     */
+    public function testCountItemNotFound()
+    {
+        $this->expectException(\Exception::class);
+        $this->Cart->count(new Item());
     }
 
     /**
