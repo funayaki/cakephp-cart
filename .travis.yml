@@ -21,7 +21,6 @@ matrix:
     - php: 7.0
       env: PHPCS=1
 
-  include:
     - php: 7.0
       env: CODECOV=1
 
