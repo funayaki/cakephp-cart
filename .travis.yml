@@ -6,6 +6,7 @@ env:
   matrix:
     - CAKEPHP=3.5.0
     - CAKEPHP=3.6.0
+    - CAKEPHP=3.7.0
 
 sudo: false
 
