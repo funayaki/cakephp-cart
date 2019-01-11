@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/funayaki/cakephp-cart.svg?branch=master)](https://travis-ci.org/funayaki/cakephp-cart)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/funayaki/cakephp-cart/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/funayaki/cakephp-cart/?branch=master)
+[![codecov](https://codecov.io/gh/funayaki/cakephp-cart/branch/master/graph/badge.svg)](https://codecov.io/gh/funayaki/cakephp-cart)
 
 # Cart plugin for CakePHP
 
